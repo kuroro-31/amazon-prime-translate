@@ -1,29 +1,49 @@
 /* 翻訳字幕コンテナのスタイル */
 .amazon-prime-translate-container {
   position: absolute;
-  bottom: 10%; /* 元の字幕より上に配置 */
-  left: 0;
-  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
   text-align: center;
   z-index: 9999;
   pointer-events: none;
   font-family: Arial, sans-serif;
   font-weight: bold;
   line-height: 1.4;
-  max-width: 80%;
-  margin: 0 auto;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-  will-change: opacity, transform;
+  max-width: 70%;
   transition: opacity 0.15s ease-in-out;
   opacity: 1;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  color: white;
+}
+
+/* 吹き出しスタイルの翻訳コンテナ */
+.amazon-prime-translate-container.speech-bubble {
+  background-color: rgba(0, 99, 180, 0.9);
+  border-radius: 8px;
+  padding: 8px 14px;
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  white-space: pre-line;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+/* 吹き出しの矢印 */
+.amazon-prime-translate-container.speech-bubble:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: rgba(0, 99, 180, 0.9) transparent transparent transparent;
 }
 
 /* フォントサイズのバリエーション */
@@ -32,28 +52,30 @@
 }
 
 .amazon-prime-translate-container.medium {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .amazon-prime-translate-container.large {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 /* 既存の字幕とうまく共存するための調整 */
 .atvwebplayersdk-captions-overlay {
   pointer-events: none !important;
   /* オリジナル字幕の位置を下部に固定 */
-  bottom: 5% !important;
+  bottom: 10% !important;
   position: absolute !important;
   transform: translateZ(0);
   will-change: transform;
+  z-index: 2 !important;
+  pointer-events: none !important;
 }
 
 /* 元の字幕を調整するためのスタイル */
 .atvwebplayersdk-captions-overlay span {
-  background-color: rgba(0, 0, 0, 0.6) !important;
-  padding: 2px 5px !important;
-  border-radius: 3px !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  padding: 3px 6px !important;
+  border-radius: 4px !important;
   transform: translateZ(0);
   will-change: transform;
 }
@@ -88,7 +110,6 @@
 }
 
 /* 表示されていない要素を完全に非表示にして描画コストを削減 */
-.amazon-prime-translate-container:empty,
 .atvwebplayersdk-captions-overlay:empty {
   opacity: 0 !important;
   visibility: hidden !important;
@@ -102,4 +123,436 @@
 
 .amazon-prime-translate-container.fade-in {
   animation: fadeIn 0.15s ease-in-out;
+}
+
+/* Amazon Prime Video 字幕メニュー右側の字幕選択UIとの共存 */
+.webPlayerUIContainer .webPlayer .subtitlesMenu {
+  z-index: 10000;
+}
+
+/* 新しいUI用スタイル */
+
+/* プレーヤーコンテナのスタイル調整 - レイアウトを横並びに */
+.webPlayerSDKContainer {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* 動画エリアのスタイル調整 */
+.scalingVideoContainer {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  left: 0 !important;
+  transition: all 0.3s ease-in-out;
+}
+
+/* 字幕パネルが表示されているときの動画エリア調整 */
+.webPlayerSDKContainer.panel-visible .scalingVideoContainer {
+  width: calc(100% - 320px) !important;
+  left: 0 !important;
+  transition: all 0.3s ease-in-out;
+}
+
+/* 字幕パネルが表示されているときの字幕エリア調整 */
+.webPlayerSDKContainer.panel-visible .atvwebplayersdk-player-container {
+  width: calc(100% - 320px) !important;
+  left: 0 !important;
+  transition: all 0.3s ease-in-out;
+}
+
+.atvwebplayersdk-playerclose-button {
+  margin-right: 165px !important;
+}
+
+/* 字幕一覧パネルのスタイル */
+.prime-translate-subtitles-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  z-index: 4 !important;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease-in-out;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* 字幕パネルの非表示状態 */
+.prime-translate-subtitles-panel.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* パネルヘッダー */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #0063b4;
+  border-bottom: 1px solid #004a8c;
+}
+
+/* タブコンテナ */
+.tab-container {
+  display: flex;
+  flex-grow: 1;
+}
+
+/* タブボタン */
+.tab-button {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  padding: 5px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  outline: none;
+}
+
+.tab-button.active {
+  color: white;
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
+
+/* 閉じるボタンと印刷ボタン */
+.close-button, .print-button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
+}
+
+/* 字幕リスト */
+.subtitles-list, .saved-items-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* 字幕アイテム */
+.subtitle-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.subtitle-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 原文テキスト */
+.original-text {
+  color: #ccc;
+  margin-bottom: 5px;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+/* 翻訳テキスト */
+.translated-text {
+  color: white;
+  font-size: 16px;
+  word-break: break-word;
+}
+
+/* 削除ボタン */
+.remove-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.remove-button:hover {
+  opacity: 1;
+}
+
+/* お気に入りボタン */
+.favorite-button {
+  position: absolute;
+  top: 5px;
+  right: 25px;
+  color: gold;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.favorite-button:hover {
+  opacity: 1;
+}
+
+/* 下部の字幕表示エリア - パネル内に表示 */
+.bottom-subtitle-area {
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: #0f1923;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 現在の字幕と翻訳の表示 */
+.current-subtitle {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  font-size: 15px;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.current-translation {
+  background-color: rgba(0, 99, 180, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* 字幕メニューの調整 */
+.atvwebplayersdk-subtitleandaudiomenu-container {
+  right: 320px !important;
+}
+
+/* パネル表示・非表示時のAmazonプレーヤーの調整 */
+.webPlayerUIContainer,
+.scalingVideoContainerBottom,
+.rendererContainer,
+.atvwebplayersdk-overlays-container,
+.webPlayerSDKUiContainer {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 字幕のステータス表示 */
+.subtitle-status {
+  color: white;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* パネル表示・非表示切り替えボタン */
+.panel-toggle-button {
+  position: absolute;
+  right: 320px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 99, 180, 0.9);
+  color: white;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  padding: 10px 5px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 5;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+/* パネルが非表示の場合のトグルボタンの位置 */
+.prime-translate-subtitles-panel.hidden ~ .panel-toggle-button {
+  right: 0;
+}
+
+.panel-toggle-button:hover {
+  opacity: 1;
+}
+
+/* Amazon Primeのコントロールエリアが字幕パネルと干渉しないように調整 */
+.atvwebplayersdk-hideabletopbuttons-container,
+.atvwebplayersdk-bottompanel-container,
+.atvwebplayersdk-timeindicator-text,
+.atvwebplayersdk-seekbar-container {
+  width: calc(100% - 320px) !important;
+  transition: width 0.3s ease-in-out;
+}
+
+.prime-translate-subtitles-panel.hidden ~ .atvwebplayersdk-hideabletopbuttons-container,
+.prime-translate-subtitles-panel.hidden ~ .atvwebplayersdk-bottompanel-container,
+.prime-translate-subtitles-panel.hidden ~ div .atvwebplayersdk-timeindicator-text,
+.prime-translate-subtitles-panel.hidden ~ div .atvwebplayersdk-seekbar-container {
+  width: 100% !important;
+}
+
+/* 翻訳中表示のスタイル */
+.current-translation.translating,
+.current-translation:empty {
+  min-height: 40px;
+  position: relative;
+}
+
+.current-translation.translating::after,
+.current-translation:empty::after {
+  content: "翻訳中...";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.7;
+  font-style: italic;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.3; }
+}
+
+/* スマートフォン・タブレット向けのレスポンシブ調整 */
+@media screen and (max-width: 768px) {
+  .prime-translate-subtitles-panel {
+    width: 240px !important;
+  }
+  
+  .webPlayerSDKContainer.panel-visible .scalingVideoContainer {
+    width: calc(100% - 240px) !important;
+  }
+  
+  .panel-toggle-button {
+    right: 245px;
+  }
+  
+  .atvwebplayersdk-hideabletopbuttons-container,
+  .atvwebplayersdk-bottompanel-container,
+  .atvwebplayersdk-timeindicator-text,
+  .atvwebplayersdk-seekbar-container {
+    width: calc(100% - 240px) !important;
+  }
+  
+  .current-subtitle,
+  .current-translation {
+    font-size: 14px;
+    padding: 8px;
+  }
+  
+  .subtitle-item {
+    font-size: 12px;
+  }
+}
+
+/* Amazon Primeのコントロールと字幕パネルの干渉を防止 */
+.webPlayerSDKUiContainer,
+.atvwebplayersdk-bottomPanel-container,
+.webPlayerUIContainer {
+  /* width: calc(100% - 320px) !important; */
+  transition: width 0.3s ease-in-out;
+}
+
+/* パネルが非表示の場合はコントロールを全幅に戻す */
+.prime-translate-subtitles-panel.hidden ~ .webPlayerSDKUiContainer,
+.prime-translate-subtitles-panel.hidden ~ .atvwebplayersdk-bottomPanel-container,
+.prime-translate-subtitles-panel.hidden ~ .webPlayerUIContainer {
+  width: 100% !important;
+}
+
+/* パネルが表示されている時のwebPlayerSDKUiContainerの調整 */
+.prime-translate-subtitles-panel.flex ~ .webPlayerSDKUiContainer{
+    /* width: calc(100% - 320px) !important; */
+}
+
+/* 字幕項目の強調表示（最新の字幕） */
+.subtitle-item:first-child {
+  border-left: 3px solid #0063b4;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 字幕項目の削除・お気に入りボタンの位置調整 */
+.subtitle-item {
+  padding-right: 50px;
+  position: relative;
+}
+
+/* 翻訳UIと元のAmazonプライムビデオUIの共存のための調整 */
+.webPlayerUIContainer {
+  position: relative !important;
+  z-index: 2 !important;
+  pointer-events: auto !important;
+}
+
+/* パネルが開いている時のUI調整 */
+.webPlayerSDKContainer.panel-visible .webPlayerUIContainer {
+  /* width: calc(100% - 320px) !important; */
+  left: 0 !important;
+}
+
+/* 元々のコントロールUIが翻訳UIの上に表示されるようにする */
+.webPlayerSDKUiContainer {
+  position: absolute !important;
+  z-index: 3 !important;
+  pointer-events: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 100% !important;
+}
+
+/* 元の字幕表示と翻訳字幕の重ならないように位置調整 */
+.atvwebplayersdk-captions-overlay {
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+/* プレーヤーUIの操作を妨げないようにする */
+.prime-translate-subtitles-panel {
+  z-index: 4 !important; /* UIの上に表示 */
+}
+
+/* UIコンポーネントのホバー状態をちゃんと表示できるようにする */
+.fewcsle button:hover,
+.f7mv6lt button:hover,
+.f1upyuoq button:hover {
+  z-index: 10 !important;
+}
+
+/* 字幕パネルが表示されている時にプレーヤーコントロールが正しく表示されるように */
+/* .webPlayerSDKContainer.panel-visible  {
+  left: calc(-160px) !important;
+  width: calc(100% - 320px) !important;
+} */
+
+/* パネルが表示されている時のwebPlayerSDKUiContainerの調整 */
+/* .webPlayerSDKContainer.panel-visible .webPlayerSDKUiContainer {
+  width: calc(100% - 320px) !important;
+  left: calc(50% - 160px) !important;
+} */
+
+/* パネルが非表示の場合はコントロールを全幅に戻す */
+.prime-translate-subtitles-panel.hidden ~ .webPlayerSDKUiContainer {
+  width: 100% !important;
+  left: 50% !important;
+}
+
+/* スマートフォン・タブレット向けのレスポンシブ調整 */
+@media screen and (max-width: 768px) {
+  .webPlayerSDKContainer.panel-visible .webPlayerSDKUiContainer {
+    width: calc(100% - 240px) !important;
+    left: calc(50% - 120px) !important;
+  }
 } 
