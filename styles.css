@@ -1,0 +1,67 @@
+/* 翻訳字幕コンテナのスタイル */
+.amazon-prime-translate-container {
+  position: absolute;
+  bottom: 20%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 9999;
+  pointer-events: none;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  line-height: 1.4;
+  max-width: 80%;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+/* フォントサイズのバリエーション */
+.amazon-prime-translate-container.small {
+  font-size: 16px;
+}
+
+.amazon-prime-translate-container.medium {
+  font-size: 20px;
+}
+
+.amazon-prime-translate-container.large {
+  font-size: 24px;
+}
+
+/* 既存の字幕とうまく共存するための調整 */
+.atvwebplayersdk-captions-overlay {
+  pointer-events: none !important;
+}
+
+/* 元の字幕を非表示にする場合のスタイル */
+.hide-original-subtitle span {
+  display: none !important;
+}
+
+/* 翻訳中のローディングインジケータ */
+.amazon-prime-translate-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 翻訳エラーのスタイル */
+.amazon-prime-translate-error {
+  color: #ff6b6b;
+  font-size: 0.9em;
+  margin-top: 5px;
+} 

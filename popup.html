@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon Prime Translate</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Amazon Prime Translate</h1>
+    
+    <div class="settings">
+      <div class="setting-group">
+        <label for="apiKey">OpenAI API キー:</label>
+        <input type="password" id="apiKey" placeholder="OpenAI API キーを入力">
+      </div>
+      
+      <div class="setting-group">
+        <label for="targetLang">翻訳先言語:</label>
+        <select id="targetLang">
+          <option value="ja">日本語</option>
+          <option value="en">英語</option>
+          <option value="zh">中国語</option>
+          <option value="ko">韓国語</option>
+          <option value="fr">フランス語</option>
+          <option value="de">ドイツ語</option>
+          <option value="es">スペイン語</option>
+        </select>
+      </div>
+      
+      <div class="setting-group">
+        <label for="fontSize">字幕サイズ:</label>
+        <select id="fontSize">
+          <option value="small">小</option>
+          <option value="medium" selected>中</option>
+          <option value="large">大</option>
+        </select>
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="showOriginal" checked>
+          オリジナル字幕を表示
+        </label>
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="showTranslation" checked>
+          翻訳字幕を表示
+        </label>
+      </div>
+    </div>
+    
+    <div class="buttons">
+      <button id="saveBtn">保存</button>
+      <button id="resetBtn">リセット</button>
+    </div>
+    
+    <div class="status" id="statusMsg"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 

@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Amazon Prime Translate",
+  "version": "1.0",
+  "description": "Amazon Prime Video 用の翻訳拡張機能",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["*://*.amazon.co.jp/*", "*://*.amazon.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.amazon.co.jp/*", "*://*.amazon.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*"],
+      "matches": ["*://*.amazon.co.jp/*", "*://*.amazon.com/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+} 

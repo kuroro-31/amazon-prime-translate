@@ -1,0 +1,94 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.container {
+  width: 300px;
+  padding: 15px;
+}
+
+h1 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #1a73e8;
+  text-align: center;
+}
+
+.settings {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.setting-group {
+  margin-bottom: 12px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+input[type="password"],
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  flex-basis: 48%;
+}
+
+button:hover {
+  background-color: #0d62d0;
+}
+
+#resetBtn {
+  background-color: #f44336;
+}
+
+#resetBtn:hover {
+  background-color: #d32f2f;
+}
+
+.status {
+  font-size: 14px;
+  text-align: center;
+  height: 20px;
+  color: #4caf50;
+}
+
+.error {
+  color: #f44336;
+} 
