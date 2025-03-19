@@ -1,7 +1,7 @@
 /* 翻訳字幕コンテナのスタイル */
 .amazon-prime-translate-container {
   position: absolute;
-  bottom: 20%;
+  bottom: 10%; /* 元の字幕より上に配置 */
   left: 0;
   width: 100%;
   text-align: center;
@@ -17,6 +17,13 @@
   padding: 5px 10px;
   border-radius: 5px;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: opacity, transform;
+  transition: opacity 0.15s ease-in-out;
+  opacity: 1;
 }
 
 /* フォントサイズのバリエーション */
@@ -35,6 +42,20 @@
 /* 既存の字幕とうまく共存するための調整 */
 .atvwebplayersdk-captions-overlay {
   pointer-events: none !important;
+  /* オリジナル字幕の位置を下部に固定 */
+  bottom: 5% !important;
+  position: absolute !important;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* 元の字幕を調整するためのスタイル */
+.atvwebplayersdk-captions-overlay span {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  padding: 2px 5px !important;
+  border-radius: 3px !important;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* 元の字幕を非表示にする場合のスタイル */
@@ -64,4 +85,21 @@
   color: #ff6b6b;
   font-size: 0.9em;
   margin-top: 5px;
+}
+
+/* 表示されていない要素を完全に非表示にして描画コストを削減 */
+.amazon-prime-translate-container:empty,
+.atvwebplayersdk-captions-overlay:empty {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 翻訳テキストがフェードイン/アウトするアニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.amazon-prime-translate-container.fade-in {
+  animation: fadeIn 0.15s ease-in-out;
 } 
