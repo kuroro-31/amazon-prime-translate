@@ -297,6 +297,7 @@ function createSubtitlesListPanel(playerContainer) {
   savedItemsList.className = "saved-items-list";
   savedItemsList.style.display = "none";
 
+  /* 最下部の字幕表示エリアは非表示とする
   // 現在の字幕を表示するエリアを追加
   const bottomSubtitleArea = document.createElement("div");
   bottomSubtitleArea.className = "bottom-subtitle-area";
@@ -310,12 +311,13 @@ function createSubtitlesListPanel(playerContainer) {
   // 順序を入れ替え：翻訳を先に、原文を後に
   bottomSubtitleArea.appendChild(currentTranslationElement);
   bottomSubtitleArea.appendChild(currentSubtitleElement);
+  */
 
   // パネルにヘッダーとリストを追加
   subtitlesPanel.appendChild(panelHeader);
   subtitlesPanel.appendChild(subtitlesList);
   subtitlesPanel.appendChild(savedItemsList);
-  subtitlesPanel.appendChild(bottomSubtitleArea);
+  // subtitlesPanel.appendChild(bottomSubtitleArea); // 最下部の字幕表示エリアは非表示
 
   // プレーヤーコンテナにパネルを追加
   playerContainer.appendChild(subtitlesPanel);
@@ -379,6 +381,12 @@ function updateSubtitlesList() {
     subtitlesList.scrollHeight - subtitlesList.scrollTop <=
       subtitlesList.clientHeight + 50;
 
+  // 現在の字幕を特定 - currentSubtitleを使用して特定する
+  // 最新の字幕ではなく、currentSubtitleが一致するものをアクティブとして扱う
+  const activeSubtitleData = previousSubtitles.find(
+    (item) => item.original === currentSubtitle
+  );
+
   // 既存のリストをクリア
   subtitlesList.innerHTML = "";
 
@@ -393,11 +401,23 @@ function updateSubtitlesList() {
     return;
   }
 
+  // アクティブな字幕要素への参照を保持
+  let activeSubtitleItem = null;
+
   subtitlesToShow.forEach((subtitle, index) => {
     const subtitleItem = document.createElement("div");
     subtitleItem.className = "subtitle-item";
     // クリック可能な要素として設定
     subtitleItem.style.cursor = "pointer";
+
+    // 現在のアクティブな字幕にはアクティブクラスを追加
+    if (
+      activeSubtitleData &&
+      subtitle.original === activeSubtitleData.original
+    ) {
+      subtitleItem.classList.add("active-subtitle");
+      activeSubtitleItem = subtitleItem;
+    }
 
     // 表示を削除するためのボタン
     const removeButton = document.createElement("span");
@@ -454,6 +474,9 @@ function updateSubtitlesList() {
           // 記録された再生時間に直接移動
           videoElement.currentTime = timestamp;
 
+          // 現在の字幕を更新（クリックしたものをカレントに）
+          currentSubtitle = subtitle.original;
+
           // 字幕パネルの表示状態は変更しない
           // 短い時間を置いてから再生
           setTimeout(() => {
@@ -461,6 +484,45 @@ function updateSubtitlesList() {
               videoElement.play();
             }
           }, 100);
+
+          // 現在のアクティブな字幕をマーク
+          const allSubtitleItems = document.querySelectorAll(".subtitle-item");
+          allSubtitleItems.forEach((item) =>
+            item.classList.remove("active-subtitle")
+          );
+          subtitleItem.classList.add("active-subtitle");
+
+          // クリックした字幕が見えるようにスクロール
+          // scrollIntoViewの代わりに親要素内でのスクロール処理を実装
+          const subtitlesList = document.querySelector(".subtitles-list");
+          if (subtitlesList) {
+            const itemTop = subtitleItem.offsetTop;
+            const listScrollTop = subtitlesList.scrollTop;
+            const listHeight = subtitlesList.clientHeight;
+            const itemHeight = subtitleItem.clientHeight;
+
+            // 要素が表示領域の中央に来るようにスクロール
+            subtitlesList.scrollTop = itemTop - listHeight / 2 + itemHeight / 2;
+          }
+
+          // ユーザーがスクロールしたとマーク（自動スクロールを一時的に無効化）
+          isUserScrolling = true;
+          // 少し時間を置いてから自動スクロールを再開できるようにする
+          if (userScrollTimeout) {
+            clearTimeout(userScrollTimeout);
+          }
+          userScrollTimeout = setTimeout(() => {
+            isUserScrolling = false;
+          }, 3000);
+
+          // 現在の字幕パネル内の表示も更新
+          updateCurrentSubtitleInPanel(subtitle.original);
+          // 翻訳も更新（キャッシュがあればすぐに表示される）
+          if (subtitle.translated && subtitle.translated !== "翻訳中...") {
+            displayTranslation(subtitle.translated);
+          } else {
+            getTranslation(subtitle.original);
+          }
         }
       } catch (e) {
         console.error(
@@ -473,12 +535,40 @@ function updateSubtitlesList() {
     subtitlesList.appendChild(subtitleItem);
   });
 
-  // 一番下に自動スクロール（ユーザーが手動でスクロールしていない場合のみ）
-  if (wasAtBottom) {
+  // 現在のアクティブな字幕が見えるようにスクロール
+  if (!isUserScrolling && activeSubtitleItem) {
+    // 一度タイムアウトを設定して確実に実行
     setTimeout(() => {
-      subtitlesList.scrollTop = subtitlesList.scrollHeight;
-    }, 100);
+      // スクロール実行前に要素が確実に存在することを確認
+      if (activeSubtitleItem && activeSubtitleItem.isConnected) {
+        // scrollIntoViewの代わりに親要素内でのスクロール処理を実装
+        const subtitlesList = document.querySelector(".subtitles-list");
+        if (subtitlesList) {
+          const itemTop = activeSubtitleItem.offsetTop;
+          const listScrollTop = subtitlesList.scrollTop;
+          const listHeight = subtitlesList.clientHeight;
+          const itemHeight = activeSubtitleItem.clientHeight;
+
+          // 要素が表示領域の中央に来るようにスクロール
+          subtitlesList.scrollTop = itemTop - listHeight / 2 + itemHeight / 2;
+        }
+
+        // スクロール後に要素に視覚的に注目させる
+        activeSubtitleItem.classList.add("highlight-pulse");
+        setTimeout(() => {
+          if (activeSubtitleItem && activeSubtitleItem.isConnected) {
+            activeSubtitleItem.classList.remove("highlight-pulse");
+          }
+        }, 1000);
+      }
+    }, 150); // スクロールタイミングを少し遅らせる
   }
+  // 一番下に自動スクロール（以前の動作）- 現在は使用しない
+  // if (wasAtBottom) {
+  //   setTimeout(() => {
+  //     subtitlesList.scrollTop = subtitlesList.scrollHeight;
+  //   }, 100);
+  // }
 }
 
 // 元の字幕位置を調整
@@ -580,6 +670,10 @@ function handleSubtitleChange(captionsContainer) {
 
     // 字幕が変更された場合のみ処理
     if (newSubtitle && newSubtitle !== currentSubtitle) {
+      // 前回の字幕をリセット
+      clearActiveSubtitles();
+
+      // 現在の字幕を更新
       currentSubtitle = newSubtitle;
 
       // オリジナル字幕の表示/非表示を設定
@@ -611,6 +705,9 @@ function handleSubtitleChange(captionsContainer) {
 
       // 次の字幕も先読みで翻訳（将来の字幕を予測）
       preloadNextSubtitles();
+
+      // ユーザースクロールフラグをリセット（自動スクロールを有効にするため）
+      isUserScrolling = false;
     } else if (!newSubtitle) {
       // 字幕がなくなった場合は翻訳も消す
       clearTranslation();
@@ -621,8 +718,18 @@ function handleSubtitleChange(captionsContainer) {
   }
 }
 
+// 全ての字幕からアクティブクラスを削除する補助関数
+function clearActiveSubtitles() {
+  const allSubtitleItems = document.querySelectorAll(".subtitle-item");
+  allSubtitleItems.forEach((item) => item.classList.remove("active-subtitle"));
+}
+
 // 現在の字幕をパネル内に表示
 function updateCurrentSubtitleInPanel(subtitle) {
+  // 最下部の字幕表示エリアが非表示になったため、何もしない
+  return;
+
+  /* 元のコード
   // 現在の字幕を表示するエリア
   const currentSubtitleElement = document.querySelector(".current-subtitle");
   if (currentSubtitleElement) {
@@ -637,6 +744,7 @@ function updateCurrentSubtitleInPanel(subtitle) {
     currentTranslationElement.textContent = "翻訳中...";
     currentTranslationElement.classList.add("translating");
   }
+  */
 }
 
 // 字幕履歴に追加
@@ -843,6 +951,10 @@ function updateSubtitleHistoryTranslation(original, translation) {
 
 // 翻訳結果を表示
 function displayTranslation(translatedText) {
+  // 最下部の字幕表示エリアが非表示になったため、何もしない
+  return;
+
+  /* 元のコード
   // パネル内の翻訳表示エリアを更新
   const currentTranslationElement = document.querySelector(
     ".current-translation"
@@ -857,10 +969,13 @@ function displayTranslation(translatedText) {
       currentTranslationElement.classList.remove("translating");
     }
   }
+  */
 }
 
 // 翻訳表示をクリア
 function clearTranslation() {
+  // 最下部の字幕表示エリアが非表示になったため、現在の字幕のクリア処理はスキップ
+  /* 元のコード
   // パネル内の字幕エリアもクリア
   const currentSubtitleElement = document.querySelector(".current-subtitle");
   const currentTranslationElement = document.querySelector(
@@ -875,6 +990,7 @@ function clearTranslation() {
     currentTranslationElement.textContent = "";
     currentTranslationElement.classList.remove("translating");
   }
+  */
 
   currentSubtitle = "";
 }
