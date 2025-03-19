@@ -1,1 +1,0 @@
-chrome.runtime.onInstalled.addListener(()=>{console.log("Amazon Prime Translator拡張機能がインストールされました"),chrome.storage.sync.set({targetLanguage:"ja",sourceLanguage:"en",showOriginal:!0,showTranslation:!0,fontSize:16,position:"bottom",enabled:!0})});chrome.runtime.onMessage.addListener((e,r,t)=>{if(e.action==="translate"){const n=`翻訳: ${e.text}`;return t({translation:n}),!0}});
