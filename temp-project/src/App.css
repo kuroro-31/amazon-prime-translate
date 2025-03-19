@@ -1,0 +1,117 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Amazon Prime Translator スタイル */
+
+.app {
+  width: 400px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  padding: 20px;
+}
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.settings-container h1 {
+  font-size: 20px;
+  color: #e47911; /* Amazon Primeの色 */
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.setting-group label {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setting-group select,
+.setting-group input[type="number"] {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 140px;
+}
+
+.setting-group input[type="checkbox"] {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.save-button {
+  background-color: #e47911;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.save-button:hover {
+  background-color: #f19c39;
+}
+
+.status-message {
+  margin-top: 15px;
+  color: #18840f;
+  text-align: center;
+  font-weight: 500;
+}
